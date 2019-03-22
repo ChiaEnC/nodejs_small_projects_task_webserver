@@ -26,13 +26,13 @@ const userRouter = require("./routers/user");
 //     next();
 //   }
 // });
-app.use((req, res, next) => {
-  if (req) {
-    res.status("503").send("Sorry the site is under maintenance level");
-  } else {
-    next();
-  }
-});
+// app.use((req, res, next) => {
+//   if (req) {
+//     res.status("503").send("Sorry the site is under maintenance level");
+//   } else {
+//     next();
+//   }
+// });
 
 // use
 app.use(express.json());
@@ -49,18 +49,30 @@ app.listen(port, () => {
 });
 
 // const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const myFunction = async () => {
-  const token = jwt.sign({ _id: "a123" }, "thisismynewcourse", {
-    expiresIn: "7 days"
-  });
-  const data = jwt.verify(token, "thisismynewcourse");
-  console.log(data);
-  // const password = "Red12345!";
-  // const hashedPassword = await bcrypt.hash(password, 8);
-  // console.log(password);
-  // console.log(hashedPassword);
-  // const isMatch = await bcrypt.compare("Red12345!", hashedPassword);
-  // console.log(isMatch);
+// const jwt = require("jsonwebtoken");
+// const myFunction = async () => {
+//   const token = jwt.sign({ _id: "a123" }, "thisismynewcourse", {
+//     expiresIn: "7 days"
+//   });
+//   const data = jwt.verify(token, "thisismynewcourse");
+//   console.log(data);
+//   // const password = "Red12345!";
+//   // const hashedPassword = await bcrypt.hash(password, 8);
+//   // console.log(password);
+//   // console.log(hashedPassword);
+//   // const isMatch = await bcrypt.compare("Red12345!", hashedPassword);
+//   // console.log(isMatch);
+// };
+// myFunction();
+
+const Task = require("./model/task");
+const User = require("./model/user");
+const main = async () => {
+  const user = await User.findById("5c95097c64a9e14377b32940");
+  await user.populate("tasks").execPopulate();
+  console.log(user.tasks);
+  // const task = await Task.findById("5c9509a714eb1443821750a8");
+  // await task.populate("owner").execPopulate();
+  // console.log(task.owner);
 };
-myFunction();
+main();
