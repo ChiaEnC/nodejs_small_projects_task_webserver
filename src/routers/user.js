@@ -5,7 +5,7 @@ const auth = require("../middleware/auth");
 const validator = require("validator");
 const multer = require("multer");
 const sharp = require("sharp");
-
+const { sendWelcomeEmail, sendCancelationEmail } = require("../emails/account");
 const upload = multer({
   // dest: "avatars",
   limits: {
@@ -92,6 +92,7 @@ router.delete("/users/me", auth, async (req, res) => {
     // if (!user) {
     //   return res.status(404).send();
     // }
+    sendCancelationEmail(req.user.email, req.user.name);
     await req.user.remove();
     res.send(req.user);
   } catch (e) {
@@ -103,11 +104,12 @@ router.post("/users", async function(req, res) {
   const user = new User(req.body);
   try {
     await user.save();
+    sendWelcomeEmail(user.email, user.name);
     const token = await user.generateAuthToken();
     //res.send({ user, token });
     res.status(201).send({ user, token });
   } catch (e) {
-    res.status(400).send({ error: "invalid" });
+    res.status(400).send(e);
   }
 });
 
