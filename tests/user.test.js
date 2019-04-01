@@ -19,7 +19,7 @@ afterEach(() => {
   console.log("afterEach");
 });
 test("Should signup a new user", async () => {
-  await request(app)
+  const response = await request(app)
     .post("/users")
     .send({
       name: "Vivian",
@@ -27,6 +27,9 @@ test("Should signup a new user", async () => {
       password: "123123123123"
     })
     .expect(201);
+  // assert that the database is changed correctly
+  const user = await User.findById(response.body.user._id);
+  expect(user).not.toBeNull();
 });
 test("Should login existing user", async () => {
   await request(app)
@@ -49,7 +52,6 @@ test("Should not login nonexistent users", async () => {
 });
 
 test("Should get profile from user", async () => {
-  console.log(userOne.tokens[0].token);
   await request(app)
     .get("/users/me")
     .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
