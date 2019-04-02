@@ -14,7 +14,7 @@ router.post("/tasks", auth, async (req, res) => {
 
   try {
     await task.save();
-    res.send(task);
+    res.status(201).send(task);
   } catch (e) {
     res.status(400).send(e);
   }
@@ -46,11 +46,11 @@ router.get("/tasks", auth, async (req, res) => {
         }
       })
       .execPopulate();
-    res.status(201).send(req.user.tasks);
+    res.status(200).send(req.user.tasks);
     // const tasks = await Task.find({ owner: req.user._id });
     // res.status(201).send(tasks);
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send();
   }
 });
 
@@ -69,7 +69,7 @@ router.get("/tasks/:id", auth, async (req, res) => {
       res.send(task);
     }
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send();
   }
 });
 router.delete("/tasks/:id", auth, async (req, res) => {
@@ -79,11 +79,11 @@ router.delete("/tasks/:id", auth, async (req, res) => {
       owner: req.user._id
     });
     if (!task) {
-      res.status(400).send();
+      res.status(404).send();
     }
     res.send(task);
   } catch (e) {
-    res.status(500).send(e);
+    res.status(500).send();
   }
 });
 
